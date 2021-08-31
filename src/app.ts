@@ -38,5 +38,6 @@ export class App{
     }
     private routes(): void{
         this.express.use('/usuarios', usuarioRoute);
+        this.express.use('/mensagens', mensagemRoute);
     }
 }
