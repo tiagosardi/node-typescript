@@ -7,10 +7,14 @@ class UsuarioController{
         const resposta ={
             message: 'Usuário cadastrado!',
             _id:usuario._id,
-            nome: usuario.nome
+            nome: usuario.nome,
+            senha: usuario.senha,
+            avatar:usuario.avatar   
         };
         return res.json(resposta);
     }
 }
+
+
 
 export default new UsuarioController();
