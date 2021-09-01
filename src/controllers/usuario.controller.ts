@@ -33,6 +33,11 @@ class UsuarioController{
             token: usuario.gerarToken()
         });
     }
+
+    //busca id do usuario e captura os dados
+    public getById(req: Request res:Response): Response{
+        return res.json(req.usuarioChat);
+    }
 }
 
 
