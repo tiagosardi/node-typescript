@@ -11,4 +11,12 @@ mensagemRoute.post(
     mensagemController.enviar
 );
 
+//buscando dados do servidor com get
+mensagemRoute.get(
+    '/:id', 
+    authMiddleware.autorizarUsuarioByParams,
+    authMiddleware.autorizarUsuarioByToken,
+    mensagemController.listar
+);
+
 export default mensagemRoute;
