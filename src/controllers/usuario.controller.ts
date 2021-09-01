@@ -78,7 +78,15 @@ class UsuarioController{
             })
         ); 
 
-        return res.json(usuarios);
+        //ordenar mensagens do meu de lista de conversas (dar preferencia para ultimas mensagens mais recentes)
+        const mensagensOrdenadas = usuariosMensagem.sort((a,b) =>{
+            //compara a data da ultima msg
+            return (a.dataUltimaMensagem ? 0:1) - (b.dataUltimaMensagem ? 0:1)
+                || -(a.dataUltimaMensagem > b.dataUltimaMensagem)
+                || +(a.dataUltimaMensagem < b.dataUltimaMensagem)
+
+        }
+        return res.json(mensagensOrdenadas);
     }
 }
 
