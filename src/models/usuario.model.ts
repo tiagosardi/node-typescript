@@ -39,11 +39,16 @@ UsuarioSchema.methods.compararSenhas = function(senha:string): Promise<boolean>{
 }
 
 UsuarioSchema.methods.gerarToken = function(): string{
+
+    //cria a codificação do token que vai servir na autenticação do usuario
+    // olhar auth.middleware.ts
     const decodedToken = {
         _id: String(this._id),
         nome: this.nome,
         avatar: this.avatar
     }
+
+    //jwt.sign cria a criptografia 
     return jwt.sign(decodedToken, 'SECRET', {
         //1 dia para validade do token
         //se o usuario ficar mais de 1 dia sem acessar a aplicacao, o token nao serah mais valido

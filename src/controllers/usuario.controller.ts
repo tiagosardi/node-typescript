@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import mensagemModel from "../models/mensagem.model";
 import usuarioModel from "../models/usuario.model";
 import usuarioRoute from "../routes/usuario.route";
+import mensagemService from "../services/mensagem.service";
 
 class UsuarioController{
     public async cadastrar(req: Request,res: Response): Promise<Response>{
@@ -61,31 +62,15 @@ class UsuarioController{
                 return mensagemModel.buscaChat(idUsuarioLogado, usuario._id)
                 .sort('-createdAt') //ultima mensagem da lista
                 .limit(1) //pega apenas 1 mensagem da consulta
-                .map(mensagens =>{
-                    return{
-                        //captura os dados do usuario
-                        _id: usuario._id,
-                        nome: usuario.nome,
-                        avatar: usuario.avatar,
-    
-                        //transforma o array de mensagem relacionadas ao usuario capturado
-                        //tem q verificar se tem mensagem pra exibir
-                        ultimaMensagem: mensagens[0] ? mensagens[0].texto : null//retorna a primeira mensagem da lista invertida se existir, se não existir, retorna null
-                        dataUltimaMensagem: mensagens[0] ? mensagens[0].createAt : null//retorna a data da ultima mensagem se existir, se não existir, retorna null
-    
-                    }
+                .map(mensagens =>
+                     mensagemService.getResultadoMensagemUsuario(mensagens, usuario);
                 })
             })
         ); 
 
         //ordenar mensagens do meu de lista de conversas (dar preferencia para ultimas mensagens mais recentes)
-        const mensagensOrdenadas = usuariosMensagem.sort((a,b) =>{
-            //compara a data da ultima msg
-            return (a.dataUltimaMensagem ? 0:1) - (b.dataUltimaMensagem ? 0:1)
-                || -(a.dataUltimaMensagem > b.dataUltimaMensagem)
-                || +(a.dataUltimaMensagem < b.dataUltimaMensagem)
-
-        }
+        //compara a data da ultima msg
+        const mensagensOrdenadas = mensagemService.retornaMensagensOrdenadas(usuariosMensagem);
         return res.json(mensagensOrdenadas);
     }
 }

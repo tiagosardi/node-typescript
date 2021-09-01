@@ -4,7 +4,7 @@ import { UsuarioInterface } from "../interfaces/usuario.interface";
 import usuarioModel from "../models/usuario.model";
 
 
-class AuthMiddleware{
+class AuthMiddleware{,
     public async autorizarUsuarioByToken(req: Request, res: Response, next:NextFunction): Promise<Response | void>{
         const token = req.query.token || req.headers['x-access-token'];
         if(!token){
@@ -27,6 +27,27 @@ class AuthMiddleware{
 
         }catch(error){
             return res.status(401).send({message: 'Token invalido!'});
+
+        }
+
+    }
+
+
+    public async autorizarUsuarioByParams(req: Request, res: Response, next:NextFunction): Promise<Response | void>{
+       
+        try{
+            
+            const usuario = await usuarioModel.findById(req.params.id);
+
+            if(!usuario){
+                return res.status(400).send({'Usuário não existe no banco.'})
+            }
+            req.usuarioChat = usuario;
+
+            return next();
+
+        }catch(error){
+            return res.status(401).send({message: 'Usuário, invalido!'});
 
         }
 

@@ -4,3 +4,8 @@ export interface UsuarioInterface{
     senha?: string;
     avatar?: string;
 }
+
+export interface MensagemUsuario extends UsuarioInterface{
+     ultimaMensagem: string;
+     dataUltimaMensagem: Date;
+}
