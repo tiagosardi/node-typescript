@@ -1,11 +1,11 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import jwt from 'jsonwebtoken';
 import { UsuarioInterface } from "../interfaces/usuario.interface";
 import usuarioModel from "../models/usuario.model";
 
 
 class AuthMiddleware{
-    public autorizarUsuarioByToken(req: Request, res: Response){
+    public async autorizarUsuarioByToken(req: Request, res: Response, next:NextFunction): Promise<Response | void>{
         const token = req.query.token || req.headers['x-access-token'];
         if(!token){
             return res.status(401).send({message: 'Acesso Negado!'})
