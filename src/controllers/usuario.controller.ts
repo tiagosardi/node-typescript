@@ -54,27 +54,30 @@ class UsuarioController{
         });
 
         //usar os usuarios q tem e capturar a ultima mensagem enviada ou recebida
-        const usuariosMensagens = usuarios.map(usuario =>{
-            //toda vez q ele passar por aqui, tera um novo id de usuario
-            //queremos que retorne a ultima msg de cada usuario para exibir no menu principal
-            return mensagemModel.buscaChat(idUsuarioLogado, usuario._id)
-            .sort('-createdAt') //ultima mensagem da lista
-            .limit(1) //pega apenas 1 mensagem da consulta
-            .map(mensagens =>{
-                return{
-                    //captura os dados do usuario
-                    _id: usuario._id,
-                    nome: usuario.nome,
-                    avatar: usuario.avatar,
-
-                    //transforma o array de mensagem relacionadas ao usuario capturado
-                    //tem q verificar se tem mensagem pra exibir
-                    ultimaMensagem: mensagens[0] ? mensagens[0].texto : null//retorna a primeira mensagem da lista invertida se existir, se não existir, retorna null
-                    dataUltimaMensagem: mensagens[0] ? mensagens[0].createAt : null//retorna a data da ultima mensagem se existir, se não existir, retorna null
-
-                }
+        const usuariosMensagem= await Promise.all(
+            usuarios.map(usuario =>{
+                //toda vez q ele passar por aqui, tera um novo id de usuario
+                //queremos que retorne a ultima msg de cada usuario para exibir no menu principal
+                return mensagemModel.buscaChat(idUsuarioLogado, usuario._id)
+                .sort('-createdAt') //ultima mensagem da lista
+                .limit(1) //pega apenas 1 mensagem da consulta
+                .map(mensagens =>{
+                    return{
+                        //captura os dados do usuario
+                        _id: usuario._id,
+                        nome: usuario.nome,
+                        avatar: usuario.avatar,
+    
+                        //transforma o array de mensagem relacionadas ao usuario capturado
+                        //tem q verificar se tem mensagem pra exibir
+                        ultimaMensagem: mensagens[0] ? mensagens[0].texto : null//retorna a primeira mensagem da lista invertida se existir, se não existir, retorna null
+                        dataUltimaMensagem: mensagens[0] ? mensagens[0].createAt : null//retorna a data da ultima mensagem se existir, se não existir, retorna null
+    
+                    }
+                })
             })
-        })
+        ); 
+
         return res.json(usuarios);
     }
 }
